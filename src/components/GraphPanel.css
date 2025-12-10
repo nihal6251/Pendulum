@@ -1,0 +1,39 @@
+.graph-panel {
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 24px;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.graph-panel h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  color: #00ffc8;
+}
+
+.graphs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.graph-container {
+  background: #0f0f1e;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.graph-container h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #b8b8d0;
+  text-align: center;
+}
+
+.graph-container canvas {
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+}
