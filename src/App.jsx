@@ -16,6 +16,8 @@ function App() {
   });
 
   const physics = usePendulumPhysics(params);
+  const [isRunning, setIsRunning] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
   const handleParamsChange = (newParams) => {
     setParams(newParams);
@@ -24,14 +26,19 @@ function App() {
 
   const handleStart = () => {
     physics.start();
+    setIsRunning(true);
+    setHasStarted(true);
   };
 
   const handlePause = () => {
     physics.pause();
+    setIsRunning(false);
   };
 
   const handleReset = () => {
     physics.reset(params.initialAngle);
+    setIsRunning(false);
+    setHasStarted(false);
   };
 
   return (
@@ -61,6 +68,8 @@ function App() {
             onStart={handleStart}
             onPause={handlePause}
             onReset={handleReset}
+            isRunning={isRunning}
+            hasStarted={hasStarted}
           />
         </div>
       </div>

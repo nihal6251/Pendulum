@@ -7,7 +7,9 @@ export default function ControlPanel({
   physics,
   onStart,
   onPause,
-  onReset 
+  onReset,
+  isRunning,
+  hasStarted,
 }) {
   const [timeScale, setTimeScale] = useState(1);
 
@@ -20,7 +22,7 @@ export default function ControlPanel({
     physics.setTimeScale(scale);
   };
 
-  const isRunning = physics.isRunning.current;
+  const primaryLabel = isRunning ? '⏸ Pause' : (hasStarted ? '▶ Resume' : '▶ Start');
 
   return (
     <div className="control-panel">
@@ -31,7 +33,7 @@ export default function ControlPanel({
           className={`btn ${isRunning ? 'btn-secondary' : 'btn-primary'}`}
           onClick={isRunning ? onPause : onStart}
         >
-          {isRunning ? '⏸ Pause' : '▶ Start'}
+          {primaryLabel}
         </button>
         <button className="btn btn-secondary" onClick={onReset}>
           🔄 Reset
