@@ -8,7 +8,8 @@ export function usePendulumPhysics(initialParams) {
     angle: new GraphBuffer(200),
     angularVelocity: new GraphBuffer(200),
     energy: new GraphBuffer(200),
-    waveform: new GraphBuffer(200),
+    potentialEnergy: new GraphBuffer(200),
+    kineticEnergy: new GraphBuffer(200),
     phaseSpace: new GraphBuffer(400),
   });
 
@@ -78,12 +79,14 @@ export function usePendulumPhysics(initialParams) {
     const angle = integrator.angle;
     const angularVelocity = integrator.angularVelocity;
     const energy = integrator.energy;
-    const yPos = integrator.length * Math.cos(angle);
+    const potentialEnergy = integrator.potentialEnergy;
+    const kineticEnergy = integrator.kineticEnergy;
 
     graphBuffersRef.current.angle.add(time, angle);
     graphBuffersRef.current.angularVelocity.add(time, angularVelocity);
     graphBuffersRef.current.energy.add(time, energy);
-    graphBuffersRef.current.waveform.add(time, yPos);
+    graphBuffersRef.current.potentialEnergy.add(time, potentialEnergy);
+    graphBuffersRef.current.kineticEnergy.add(time, kineticEnergy);
     graphBuffersRef.current.phaseSpace.add(angle, angularVelocity);
 
     return {
@@ -101,6 +104,8 @@ export function usePendulumPhysics(initialParams) {
       angularVelocity: integratorRef.current.angularVelocity,
       time: integratorRef.current.time,
       energy: integratorRef.current.energy,
+      potentialEnergy: integratorRef.current.potentialEnergy,
+      kineticEnergy: integratorRef.current.kineticEnergy,
     };
   }, []);
 
@@ -109,7 +114,8 @@ export function usePendulumPhysics(initialParams) {
       angle: graphBuffersRef.current.angle.get(),
       angularVelocity: graphBuffersRef.current.angularVelocity.get(),
       energy: graphBuffersRef.current.energy.get(),
-      waveform: graphBuffersRef.current.waveform.get(),
+      potentialEnergy: graphBuffersRef.current.potentialEnergy.get(),
+      kineticEnergy: graphBuffersRef.current.kineticEnergy.get(),
       phaseSpace: graphBuffersRef.current.phaseSpace.get(),
     };
   }, []);

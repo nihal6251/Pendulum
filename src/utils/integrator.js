@@ -8,6 +8,9 @@ export class PendulumIntegrator {
     this.angularVelocity = 0;
     this.time = 0;
     this.energy = 0;
+    this.potentialEnergy = 0;
+    this.kineticEnergy = 0;
+    this.updateEnergy();
   }
 
   setParams(length, mass, gravity, damping) {
@@ -20,12 +23,26 @@ export class PendulumIntegrator {
   setAngle(angle) {
     this.angle = angle;
     this.angularVelocity = 0;
+    this.updateEnergy();
   }
 
   reset(angle = 0) {
     this.angle = angle;
     this.angularVelocity = 0;
     this.time = 0;
+    this.updateEnergy();
+  }
+
+  updateEnergy() {
+    // Calculate energy relative to the lowest point (angle = 0 is hanging down)
+    // Height is measured from the pivot point, positive upward
+    // At angle = 0 (straight down), height = -length (lowest point)
+    // We want PE = 0 at the lowest point, so we add length to shift the reference
+    const height = this.length * (1 - Math.cos(this.angle));
+    this.potentialEnergy = this.mass * this.gravity * height;
+    this.kineticEnergy =
+      0.5 * this.mass * this.length * this.length * this.angularVelocity * this.angularVelocity;
+    this.energy = this.potentialEnergy + this.kineticEnergy;
   }
 
   getAngularAcceleration(angle, angularVelocity) {
@@ -63,12 +80,8 @@ export class PendulumIntegrator {
     
     this.time += dt;
 
-    // Calculate energy
-    const height = -this.length * Math.cos(this.angle);
-    const potentialEnergy = this.mass * this.gravity * height;
-    const kineticEnergy =
-      0.5 * this.mass * this.length * this.length * this.angularVelocity * this.angularVelocity;
-    this.energy = potentialEnergy + kineticEnergy;
+    // Update energy after each step
+    this.updateEnergy();
   }
 
   getBobPosition(pivotX, pivotY) {

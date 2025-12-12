@@ -14,12 +14,13 @@ export default function PendulumCanvas({ physics, params, width, height }) {
   const animationFrameRef = useRef(null);
 
   const [viewSize, setViewSize] = useState({ w: width, h: height });
-  const pivotX = viewSize.w / 2;
-  const pivotY = 100;
 
   const roRef = useRef(null);
   useEffect(() => {
     if (!app) return;
+
+    const pivotX = viewSize.w / 2;
+    const pivotY = 100;
 
     // Resize observer to keep PIXI view matching container width
     if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
@@ -121,22 +122,31 @@ export default function PendulumCanvas({ physics, params, width, height }) {
     return () => {
       container.destroy({ children: true });
     };
-  }, [app, physics, width, height]);
+  }, [app, physics, width, height, viewSize.w]);
 
   useEffect(() => {
     if (!app || !physics) return;
+
+    const pivotX = viewSize.w / 2;
+    const pivotY = 100;
 
     const animate = () => {
       const state = physics.step();
       
       if (state || !physics.isRunning.current) {
-  const angle = physics.getState()?.angle || 0;
-  // Dynamically scale to keep the bob within the canvas bounds
-  const margin = 20;
-  const scaleX = (width / 2 - margin) / Math.max(params.length, 0.001);
-  const scaleY = (height - pivotY - margin) / Math.max(params.length, 0.001);
-  const pixelsPerMeter = Math.min(scaleX, scaleY);
-  const length = params.length * pixelsPerMeter;
+        const angle = physics.getState()?.angle || 0;
+        
+        // Dynamically scale to keep the bob within the canvas bounds
+        // Use a reasonable range for length visualization
+        const margin = 40;
+        const maxVisualLength = Math.min(viewSize.w / 2 - margin, height - pivotY - margin);
+        const minVisualLength = 80; // minimum visual length in pixels
+        
+        // Map params.length to visual range
+        // Assuming params.length ranges from 0.5 to 3.0 meters
+        const lengthRange = { min: 0.5, max: 3.0 };
+        const normalizedLength = (params.length - lengthRange.min) / (lengthRange.max - lengthRange.min);
+        const length = minVisualLength + normalizedLength * (maxVisualLength - minVisualLength);
 
         const bobX = pivotX + length * Math.sin(angle);
         const bobY = pivotY + length * Math.cos(angle);
@@ -196,7 +206,7 @@ export default function PendulumCanvas({ physics, params, width, height }) {
         roRef.current.disconnect();
       }
     };
-  }, [app, physics, params, height]);
+  }, [app, physics, params.length, height, viewSize.w]);
 
   return (
   <div style={{ background: '#0f0f1e', borderRadius: '8px', overflow: 'hidden', width: '100%', height }}>
